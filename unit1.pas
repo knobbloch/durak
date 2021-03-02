@@ -88,7 +88,7 @@ begin
   playtablegame := Tplaytable.create(StrtoInt(ComboBox1.Items[ComboBox1.ItemIndex]));
   ComboBox1.Hide;
   Button1.Hide;
-  remainingcard := 51;
+  //remainingcard := 51;
   {images[1] := Image15;
   images[2] := Image16;
   images[3] := Image17;
@@ -97,7 +97,7 @@ begin
   images[6] := Image20;
    for j := 1 to 6 do begin
          images[j].Picture.LoadFromFile('img\' + inttostr(guys[i].cards[j].suit) + '_' + inttostr(guys[i].cards[j].number) + '.png');}
-
+  playtablegame.main;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
