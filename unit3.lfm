@@ -2,16 +2,16 @@ object Form2: TForm2
   Left = 17
   Height = 363
   Top = 247
-  Width = 320
+  Width = 370
   Caption = 'Form2'
   ClientHeight = 363
-  ClientWidth = 320
+  ClientWidth = 370
   LCLVersion = '2.0.10.0'
   object Memo1: TMemo
     Left = 0
     Height = 363
     Top = 0
-    Width = 320
+    Width = 370
     Align = alClient
     ScrollBars = ssBoth
     TabOrder = 0
