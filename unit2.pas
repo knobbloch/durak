@@ -48,7 +48,6 @@ procedure Shuffle(List : TList); // функция для перемешиван
 var i, j : integer; obj : pointer;
 begin
   for i := List.Count - 1 downto 0 do begin
-    randomize;
     j := floor(random() * (i + 1));
       obj := List[j];
       List[j] := List[i];
@@ -69,7 +68,7 @@ begin
   for i := 1 to countofplayers do begin //создание игроков перенесено в конструктор стола
     guys[i] := Tguy.create(i);
   end;
-  for i := 1 to 13 do begin   // заполнение колоды
+  for i := 1 to 52 do begin   // заполнение колоды
     for j := 1 to 4 do begin
         arrayofallcards.Add(Tcard.create(i, j));
     end;
