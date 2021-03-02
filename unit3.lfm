@@ -1,0 +1,19 @@
+object Form2: TForm2
+  Left = 17
+  Height = 363
+  Top = 247
+  Width = 320
+  Caption = 'Form2'
+  ClientHeight = 363
+  ClientWidth = 320
+  LCLVersion = '2.0.10.0'
+  object Memo1: TMemo
+    Left = 0
+    Height = 363
+    Top = 0
+    Width = 320
+    Align = alClient
+    ScrollBars = ssBoth
+    TabOrder = 0
+  end
+end
