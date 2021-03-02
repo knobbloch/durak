@@ -21,7 +21,7 @@ private
 public
   numberplace : integer;
   //cards: array[1..6] of Tcard;
-  cards : TList; //этот класс в теории можно перемешать рандомно (sort)
+  cards : TList;
   constructor create(numberplaceforguy : integer);
   destructor Destroy;
 end;
@@ -47,14 +47,19 @@ uses Math;
 procedure Shuffle(List : TList); // функция для перемешивания карт
 var i, j : integer; obj : pointer;
 begin
-  for i := 0 to List.Count - 1 do begin
+  for i := List.Count - 1 downto 0 do begin
     randomize;
     j := floor(random() * (i + 1));
       obj := List[j];
       List[j] := List[i];
       List[i] := obj;
     end;
+   for i := 0 to List.Count-1 do
+    Form2.Memo1.Lines.Append(IntToStr(Tcard(List[i]).Number));//это вывод в form2
+    Form2.Memo1.Lines.Append(IntToStr(Tcard(List[i]).suit));//это вывод в form2
 end;
+
+
 
 constructor Tplaytable.create(players:integer);
 var i, j : integer;
@@ -71,7 +76,6 @@ begin
   end;
   Shuffle(arrayofallcards);
   supercard := random(-3)+4;
-  Form2.Memo1.Lines.Append('hello');
 end;
 
 destructor Tplaytable.destroy;
