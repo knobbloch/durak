@@ -30,17 +30,19 @@ end;
 Tplaytable = class
 private
 public
-  leaderindex : integer;// чел который ходит ((1..7) mod 8)
+  leaderindex : integer;// чел который подкидывает ((1..7) mod 8)
   supercard : integer;
   countofplayers : integer;
-  guys : array [1..7] of Tguy;
-  card6 : array [1..6] of Tcard;//вот они те самые 6 карт из за которых замес
+  guys : array [1..7] of Tguy; // игрок всегда перый гай!!
+  card6 : TList;//вот они те самые 6 карт из за которых замес
   arrayofallcards : TList;//колода карт
   constructor create(players:integer);
   destructor destroy;
-  procedure main;
+  procedure firstpodkid;
   function havetoprocessing : boolean;
-  function systemofchoosingcard (Listofplayer : TList) : TList;
+  procedure systemofchoosingcard (Listofplayer, returnList : TList);
+  procedure changeofcourse;
+  procedure take;
 end;
 
 
@@ -73,13 +75,14 @@ end;
 constructor Tplaytable.create(players:integer);
 var i, j : integer;
 begin
-  leaderindex := 1 + random (6); // пока что рандомно а не по меньшей козырной ((((((
+  card6 := TList.Create;
   countofplayers := players;
   arrayofallcards := TList.create;
   for i := 1 to countofplayers do begin //создание игроков перенесено в конструктор стола
     guys[i] := Tguy.create(i);
     //if guys[i].isplaying = true then  Form2.Memo1.Lines.Append('true');
   end;
+  leaderindex := countofplayers ; // пока что игрок ходит первым
   for i := 1 to 52 do begin   // заполнение колоды
     for j := 1 to 4 do begin
         arrayofallcards.Add(Tcard.create(i, j));
@@ -92,6 +95,7 @@ end;
 destructor Tplaytable.destroy;
 begin
    arrayofallcards.Free;
+   card6.Free;
 end;
 
 
@@ -113,7 +117,7 @@ end;
 function Tplaytable.havetoprocessing: boolean;  //проверяет закончера ли игра, добавляет в их списки карты
 var i, n, j : integer;
   begin
-  for i := 1 to countofplayers do begin
+  for i := 2 to countofplayers do begin
     if (guys[i].isplaying = true) then begin
         n := n + 1;
         if (arrayofallcards.Count > 0) and (guys[i].cards.Count < 6) then begin
@@ -127,10 +131,9 @@ var i, n, j : integer;
   if n <= 1 then havetoprocessing := false else havetoprocessing := true;
 end;
 
-function Tplaytable.systemofchoosingcard (Listofplayer : TList) : TList;// система выбора карт для начальных кидков, учитывает козырность и номер
+procedure Tplaytable.systemofchoosingcard (Listofplayer, returnList : TList) ;// система выбора карт для начальных кидков, учитывает козырность и номер
 var prorities : array [0..51] of integer;                               //ннужно чтобы еще была система ддля подкидов уже во время хода когда не пас
-  i, m, countofnewlist : integer;
-  returnList : TList;
+  i, m, o, countofnewlist : integer;
 begin
   for i := 0 to Listofplayer.Count - 1 do begin
     if Tcard(Listofplayer[i]).suit <> supercard then begin
@@ -140,19 +143,38 @@ begin
     end;
   for i := 0 to 51 do
     m := max(m, prorities[i]);
-  for i := 0 to 51 do
-    if prorities[i] = m then returnList.Add(Listofplayer[i]);
-end;
-
-procedure Tplaytable.main;
-var i, j : integer;
-
-begin
-  while (havetoprocessing = true) do begin
-    //    А ТУТ ДОЛЖНО НАЧАТЬСЯ использование ИИ Σ(°△°|||)︴
-    card6 := systemofchoosingcard(guys[leaderindex].cards);// подкиды начальные
-    // а какак???(( тут уже что то сложное  наверное
+  o := 0;
+  for i := 0 to 51 do  begin
+    if prorities[i] = m then begin
+      returnList.Add(Listofplayer[o]);
+      o := o+1;
+    end;
   end;
 end;
+
+procedure Tplaytable.firstpodkid; // подкиды начальные  //  я хз почему все это делается через 3 функции а не через 1
+var List : TList;
+begin
+  if (havetoprocessing = true) then begin
+    List := TList.Create;
+    systemofchoosingcard(guys[leaderindex].cards, List);
+    List.Free;
+  end;
+end;
+
+procedure Tplaytable.changeofcourse;
+begin
+  leaderindex := ((leaderindex + 1) mod countofplayers)+1;
+end;
+
+procedure Tplaytable.take; //Эта функция мной не проверена по причине дз по математике!
+var i : integer;
+begin
+  changeofcourse;
+  for i := 0 to card6.Count-1 do begin
+    guys[leaderindex].cards.Add(card6[i]);
+  end;
+end;
+
 end.
 

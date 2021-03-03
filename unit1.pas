@@ -16,6 +16,7 @@ type
   TForm1 = class(TForm)
     Button1: TButton;
     Button2: TButton;
+    Button3: TButton;
     ComboBox1: TComboBox;
     Image1: TImage;
     Image10: TImage;
@@ -61,9 +62,10 @@ type
     Label1: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    images : array [1..6] of Timage;
+    images : array [1..6] of Timage;//чтобы было красиво в теории нужно убрать эти глоб переменные но я щас не буду это делать
     guys : array [1..7] of Tguy;
     remainingcard: integer;
     supercard : integer;
@@ -97,12 +99,18 @@ begin
   images[6] := Image20;
    for j := 1 to 6 do begin
          images[j].Picture.LoadFromFile('img\' + inttostr(guys[i].cards[j].suit) + '_' + inttostr(guys[i].cards[j].number) + '.png');}
-  playtablegame.main;
+  playtablegame.firstpodkid;
+  Button3.Visible:=true;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
   close;
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);//это кнопка забрать карты
+begin
+  playtablegame.take;
 end;
 
 

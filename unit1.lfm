@@ -287,6 +287,16 @@ object Form1: TForm1
     Top = 459
     Width = 50
   end
+  object Button3: TButton
+    Left = 568
+    Height = 25
+    Top = 352
+    Width = 75
+    Caption = 'Button3'
+    OnClick = Button3Click
+    TabOrder = 3
+    Visible = False
+  end
   object ImageList1: TImageList
     Left = 172
     Top = 61
