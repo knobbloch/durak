@@ -11,7 +11,7 @@ type
 Tcard = class//1 - красные сердечки, 2 - черные сердечки, 3 - красная оставшаяся фигура, 4 - черная оставшаяся фигура
 private
 public
-  number : integer; //чем больше тем круче 13 - туз
+  number : integer; //чем больше тем круче 13 - туз, 12 - король, 11- дама, 10 - валет,  9 - 10 , 8 - 9, 7 - 8, 6 - 7, 5 - 6, 4 - 5, 3 - 4, 2 - 3, 1 - 2 ой упс как то криво ахах
   suit : integer;
   constructor create (numberofcard, suitofcard : integer);
 end;
@@ -34,12 +34,13 @@ public
   supercard : integer;
   countofplayers : integer;
   guys : array [1..7] of Tguy;
-  card6 : array [1..6] of Tcard;
+  card6 : array [1..6] of Tcard;//вот они те самые 6 карт из за которых замес
   arrayofallcards : TList;//колода карт
   constructor create(players:integer);
   destructor destroy;
   procedure main;
   function havetoprocessing : boolean;
+  function systemofchoosingcard (Listofplayer : TList) : TList;
 end;
 
 
@@ -57,7 +58,7 @@ begin
       List[j] := List[i];
       List[i] := obj;
     end;
-   for i := 0 to List.Count-1 do
+   //for i := 0 to List.Count-1 do
     //Form2.Memo1.Lines.Append(IntToStr(Tcard(List[i]).Number));//это вывод в form2
     //Form2.Memo1.Lines.Append(IntToStr(Tcard(List[i]).suit));//это вывод в form2
 end;
@@ -126,12 +127,31 @@ var i, n, j : integer;
   if n <= 1 then havetoprocessing := false else havetoprocessing := true;
 end;
 
+function Tplaytable.systemofchoosingcard (Listofplayer : TList) : TList;// система выбора карт для начальных кидков, учитывает козырность и номер
+var prorities : array [0..51] of integer;                               //ннужно чтобы еще была система ддля подкидов уже во время хода когда не пас
+  i, m, countofnewlist : integer;
+  returnList : TList;
+begin
+  for i := 0 to Listofplayer.Count - 1 do begin
+    if Tcard(Listofplayer[i]).suit <> supercard then begin
+      prorities[i] := 13 + Tcard(Listofplayer[i]).number;
+    end
+    else prorities[i] := Tcard(Listofplayer[i]).number;
+    end;
+  for i := 0 to 51 do
+    m := max(m, prorities[i]);
+  for i := 0 to 51 do
+    if prorities[i] = m then returnList.Add(Listofplayer[i]);
+end;
 
 procedure Tplaytable.main;
 var i, j : integer;
+
 begin
   while (havetoprocessing = true) do begin
-    //    А ТУТ ДОЛЖНО НАЧАТЬСЯ ИИ Σ(°△°|||)︴
+    //    А ТУТ ДОЛЖНО НАЧАТЬСЯ использование ИИ Σ(°△°|||)︴
+    card6 := systemofchoosingcard(guys[leaderindex].cards);// подкиды начальные
+    // а какак???(( тут уже что то сложное  наверное
   end;
 end;
 end.
