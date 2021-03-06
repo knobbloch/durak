@@ -167,7 +167,7 @@ begin
   leaderindex := ((leaderindex + 1) mod countofplayers)+1;
 end;
 
-procedure Tplaytable.take; //Эта функция мной не проверена по причине дз по математике!
+procedure Tplaytable.take;
 var i : integer;
 begin
   changeofcourse;
