@@ -21,7 +21,6 @@ private
 public
   isplaying : boolean; //закончил ли игрок играть
   numberplace : integer;
-  //cards: array[1..6] of Tcard;
   cards : TList;
   constructor create(numberplaceforguy : integer);
   destructor Destroy;
@@ -85,7 +84,7 @@ begin
     //if guys[i].isplaying = true then  Form2.Memo1.Lines.Append('true');
   end;
   leaderindex := countofplayers-1 ; //это тот кто подкидывает [0..6]
-  for i := 1 to 52 do begin   // заполнение колоды
+  for i := 1 to 13 do begin   // заполнение колоды
     for j := 1 to 4 do begin
         arrayofallcards.Add(Tcard.create(i, j));
     end;
