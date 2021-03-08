@@ -33,16 +33,16 @@ public
   leaderindex : integer;// чел который подкидывает ((1..7) mod 8)
   supercard : integer;
   countofplayers : integer;
-  guys : TList; // игрок всегда нулевой гай!!
+  guys : array [1..7] of Tguy; // игрок всегда перый гай!!
   card6 : TList;//вот они те самые 6 карт из за которых замес
   arrayofallcards : TList;//колода карт
   constructor create(players:integer);
   destructor destroy;
+  procedure firstpodkid;
   function havetoprocessing : boolean;
   procedure systemofchoosingcard (Listofplayer, returnList : TList);
-  procedure changeofleaderindex;
+  procedure changeofcourse;
   procedure take;
-  procedure AImain;
 end;
 
 
@@ -67,7 +67,6 @@ end;
 
 constructor Tguy.create (numberplaceforguy : integer);
 begin
-
   cards := TList.Create;
   numberplace:= numberplaceforguy;
   isplaying := true;
@@ -76,16 +75,15 @@ end;
 constructor Tplaytable.create(players:integer);
 var i, j : integer;
 begin
-  guys := TList.create;
   card6 := TList.Create;
   countofplayers := players;
   arrayofallcards := TList.create;
-  for i := 0 to countofplayers-1 do begin //создание игроков перенесено в конструктор стола
+  for i := 1 to countofplayers do begin //создание игроков перенесено в конструктор стола
     guys[i] := Tguy.create(i);
     //if guys[i].isplaying = true then  Form2.Memo1.Lines.Append('true');
   end;
-  leaderindex := countofplayers-1 ; //это тот кто подкидывает [0..6]
-  for i := 1 to 13 do begin   // заполнение колоды
+  leaderindex := countofplayers ; // пока что игрок ходит первым
+  for i := 1 to 52 do begin   // заполнение колоды
     for j := 1 to 4 do begin
         arrayofallcards.Add(Tcard.create(i, j));
     end;
@@ -96,9 +94,8 @@ end;
 
 destructor Tplaytable.destroy;
 begin
-  guys.Free;
-  arrayofallcards.Free;
-  card6.Free;
+   arrayofallcards.Free;
+   card6.Free;
 end;
 
 
@@ -120,24 +117,22 @@ end;
 function Tplaytable.havetoprocessing: boolean;  //проверяет закончера ли игра, добавляет в их списки карты
 var i, n, j : integer;
   begin
-  if Tguy(guys[0]).isplaying = false then return false;
-  for i := 0 to countofplayers-1 do begin
-    if (Tguy(guys[i]).isplaying = true) then begin
+  for i := 2 to countofplayers do begin
+    if (guys[i].isplaying = true) then begin
         n := n + 1;
-        if (arrayofallcards.Count > 0) and (Tguy(guys[i]).cards.Count < 6) then begin
-          for j := Tguy(guys[i]).cards.Count to 6 do begin
-            if  arrayofallcards.Count > 0 then Tguy(guys[i]).cards.Add(arrayofallcards[0]);
+        if (arrayofallcards.Count > 0) and (guys[i].cards.Count < 6) then begin
+          for j := guys[i].cards.Count to 6 do begin
+            if  arrayofallcards.Count > 0 then guys[i].cards.Add(arrayofallcards[0]);
             arrayofallcards.Delete(0);
           end;
         end;
-    end
-    else guys.Remove(guys[i]);
+    end;
   end;
   if n <= 1 then havetoprocessing := false else havetoprocessing := true;
 end;
 
-procedure Tplaytable.systemofchoosingcard (Listofplayer : TList) ;      // система выбора карт для начальных кидков, учитывает козырность и номер
-var prorities : array [0..51] of integer;                               //ннужно чтобы еще была система ддля подкидов
+procedure Tplaytable.systemofchoosingcard (Listofplayer, returnList : TList) ;// система выбора карт для начальных кидков, учитывает козырность и номер
+var prorities : array [0..51] of integer;                               //ннужно чтобы еще была система ддля подкидов уже во время хода когда не пас
   i, m, o, countofnewlist : integer;
 begin
   for i := 0 to Listofplayer.Count - 1 do begin
@@ -151,49 +146,35 @@ begin
   o := 0;
   for i := 0 to 51 do  begin
     if prorities[i] = m then begin
-      card6.Add(Listofplayer[o]);
+      returnList.Add(Listofplayer[o]);
       o := o+1;
     end;
   end;
 end;
 
-procedure Tplaytable.changeofleaderindex;
+procedure Tplaytable.firstpodkid; // подкиды начальные  //  я хз почему все это делается через 3 функции а не через 1
+var List : TList;
 begin
-  leaderindex := (leaderindex + 1) mod guys.Count-1;
+  if (havetoprocessing = true) then begin
+    List := TList.Create;
+    systemofchoosingcard(guys[leaderindex].cards, List);
+    List.Free;
+  end;
 end;
 
-procedure sortCardsSuitandNumber(List, List1, List2, List3, superList : TList);
-var a, b, c, i : integer;
+procedure Tplaytable.changeofcourse;
 begin
-  a := (supercard + 1) mod 4; //первая масть, List1
-  b := (supercard + 2) mod 4; //вторая масть, List2
-  c := (supercard + 3) mod 4; //третья масть, List3
-  for i := 0 to List.count-1 do begin  //сортировка по масти
-    if Tcard(List[i]).suit = a then List1.Add(List[i])
-    else if Tcard(List[i]).suit = b then List1.Add(List[i])
-    else if Tcard(List[i]).suit = c then List1.Add(List[i])
-    else if Tcard(List[i]).suit = supercard then List1.Add(List[i]);
-  end;
-  //for i
-end;
-
-procedure Tplaytable.AImain;
-begin
-  while havetoprocessing do begin
-
-  end;
+  leaderindex := ((leaderindex + 1) mod countofplayers)+1;
 end;
 
 procedure Tplaytable.take;
 var i : integer;
 begin
-  changeofleaderindex;
+  changeofcourse;
   for i := 0 to card6.Count-1 do begin
-    Tguy(guys[leaderindex]).cards.Add(card6[i]); // add подкинутые
+    guys[leaderindex].cards.Add(card6[i]);
   end;
-  changeofleaderindex;  // 2 раза потому что чел котрый берет пропускает ход
-  if not havetoprocessing then close; // строка не проверена
-  AImain;
 end;
 
 end.
+
