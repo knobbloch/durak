@@ -1,17 +1,25 @@
 object Form1: TForm1
-  Left = 331
-  Height = 529
-  Top = 205
-  Width = 852
+  Left = 375
+  Height = 521
+  Top = 179
+  Width = 1001
   Caption = 'Form1'
-  ClientHeight = 529
-  ClientWidth = 852
+  ClientHeight = 521
+  ClientWidth = 1001
   OnCreate = FormCreate
   LCLVersion = '2.0.10.0'
+  object Shape1: TShape
+    Left = 16
+    Height = 65
+    Top = 384
+    Width = 57
+    Brush.Color = clRed
+    Pen.Style = psClear
+  end
   object Button1: TButton
-    Left = 456
+    Left = 459
     Height = 23
-    Top = 272
+    Top = 149
     Width = 67
     Caption = 'Button1'
     OnClick = Button1Click
@@ -29,9 +37,9 @@ object Form1: TForm1
     TabOrder = 1
   end
   object ComboBox1: TComboBox
-    Left = 344
+    Left = 341
     Height = 23
-    Top = 272
+    Top = 149
     Width = 100
     ItemHeight = 15
     ParentFont = False
@@ -43,120 +51,185 @@ object Form1: TForm1
     Height = 58
     Top = 200
     Width = 50
+    OnDragOver = ImageDragOver
+    Stretch = True
   end
   object Image2: TImage
     Left = 392
     Height = 58
     Top = 200
     Width = 50
+    OnDragOver = ImageDragOver
+    Stretch = True
   end
   object Image3: TImage
     Left = 456
     Height = 58
     Top = 200
     Width = 50
+    OnDragOver = ImageDragOver
+    Stretch = True
   end
   object Image4: TImage
     Left = 328
     Height = 58
     Top = 264
     Width = 50
+    OnDragOver = ImageDragOver
+    Stretch = True
   end
   object Image5: TImage
     Left = 392
     Height = 58
     Top = 264
     Width = 50
+    OnDragOver = ImageDragOver
+    Stretch = True
   end
   object Image6: TImage
     Left = 456
     Height = 58
     Top = 264
     Width = 50
+    OnDragOver = ImageDragOver
+    Stretch = True
   end
   object Image7: TImage
     Left = 568
     Height = 50
     Top = 232
     Width = 58
+    Stretch = True
   end
   object Image8: TImage
     Left = 240
     Height = 50
     Top = 232
     Width = 58
+    Stretch = True
   end
   object Image9: TImage
     Left = 40
     Height = 58
     Top = 264
     Width = 50
+    Stretch = True
   end
   object Image10: TImage
     Left = 144
     Height = 58
     Top = 120
     Width = 50
+    Stretch = True
   end
   object Image11: TImage
     Left = 312
     Height = 58
     Top = 56
     Width = 50
+    Stretch = True
   end
   object Image12: TImage
     Left = 472
     Height = 58
     Top = 56
     Width = 50
+    Stretch = True
   end
   object Image13: TImage
     Left = 640
     Height = 58
     Top = 120
     Width = 50
+    Stretch = True
   end
   object Image14: TImage
     Left = 760
     Height = 58
     Top = 264
     Width = 50
+    Stretch = True
   end
   object Image15: TImage
-    Left = 139
+    Left = 21
     Height = 58
     Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    OnMouseUp = ImageMouseUp
+    Stretch = True
   end
   object Image16: TImage
-    Left = 203
+    Left = 59
     Height = 58
     Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
   end
   object Image17: TImage
-    Left = 267
+    Left = 96
     Height = 58
     Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
   end
   object Image18: TImage
-    Left = 331
+    Left = 133
     Height = 58
     Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    OnMouseUp = ImageMouseDown
+    Stretch = True
   end
   object Image19: TImage
-    Left = 394
+    Left = 171
     Height = 58
     Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    OnMouseUp = ImageMouseDown
+    Stretch = True
   end
   object Image20: TImage
-    Left = 459
+    Left = 208
     Height = 58
     Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
   end
   object Label1: TLabel
     Left = 416
@@ -168,124 +241,264 @@ object Form1: TForm1
     ParentFont = False
   end
   object Image21: TImage
-    Left = 523
+    Left = 245
     Height = 58
     Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
   end
   object Image22: TImage
-    Left = 587
+    Left = 283
     Height = 58
     Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
   end
   object Image23: TImage
-    Left = 651
+    Left = 320
     Height = 58
     Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
   end
   object Image24: TImage
-    Left = 715
+    Left = 357
     Height = 58
     Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
   end
   object Image25: TImage
-    Left = 75
-    Height = 58
-    Top = 389
-    Width = 50
-  end
-  object Image26: TImage
-    Left = 11
-    Height = 58
-    Top = 389
-    Width = 50
-  end
-  object Image27: TImage
-    Left = 779
-    Height = 58
-    Top = 389
-    Width = 50
-  end
-  object Image28: TImage
-    Left = 11
-    Height = 58
-    Top = 459
-    Width = 50
-  end
-  object Image29: TImage
-    Left = 75
-    Height = 58
-    Top = 459
-    Width = 50
-  end
-  object Image30: TImage
-    Left = 203
-    Height = 58
-    Top = 459
-    Width = 50
-  end
-  object Image31: TImage
-    Left = 139
-    Height = 58
-    Top = 459
-    Width = 50
-  end
-  object Image32: TImage
-    Left = 267
-    Height = 58
-    Top = 459
-    Width = 50
-  end
-  object Image33: TImage
-    Left = 331
-    Height = 58
-    Top = 459
-    Width = 50
-  end
-  object Image34: TImage
     Left = 395
     Height = 58
-    Top = 459
+    Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
   end
-  object Image35: TImage
+  object Image26: TImage
+    Left = 427
+    Height = 58
+    Top = 389
+    Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
+  end
+  object Image27: TImage
     Left = 459
     Height = 58
-    Top = 459
+    Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
+  end
+  object Image28: TImage
+    Left = 496
+    Height = 58
+    Top = 389
+    Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
+  end
+  object Image29: TImage
+    Left = 533
+    Height = 58
+    Top = 389
+    Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
+  end
+  object Image30: TImage
+    Left = 571
+    Height = 58
+    Top = 389
+    Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
+  end
+  object Image31: TImage
+    Left = 608
+    Height = 58
+    Top = 389
+    Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
+  end
+  object Image32: TImage
+    Left = 645
+    Height = 58
+    Top = 389
+    Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
+  end
+  object Image33: TImage
+    Left = 683
+    Height = 58
+    Top = 389
+    Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
+  end
+  object Image34: TImage
+    Left = 720
+    Height = 58
+    Top = 389
+    Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseEnter
+    OnMouseMove = ImageMouseMove
+    Stretch = True
+  end
+  object Image35: TImage
+    Left = 757
+    Height = 58
+    Top = 389
+    Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
   end
   object Image36: TImage
-    Left = 523
+    Left = 795
     Height = 58
-    Top = 459
+    Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
   end
   object Image37: TImage
-    Left = 587
+    Left = 832
     Height = 58
-    Top = 459
+    Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
   end
   object Image38: TImage
-    Left = 651
+    Left = 869
     Height = 58
-    Top = 459
+    Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
   end
   object Image39: TImage
-    Left = 715
+    Left = 907
     Height = 58
-    Top = 459
+    Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
   end
   object Image40: TImage
-    Left = 779
+    Left = 944
     Height = 58
-    Top = 459
+    Top = 389
     Width = 50
+    OnDragDrop = ImageDragDrop
+    OnEndDrag = ImageEndDrag
+    OnMouseDown = ImageMouseDown
+    OnMouseEnter = ImageMouseEnter
+    OnMouseLeave = ImageMouseLeave
+    OnMouseMove = ImageMouseMove
+    Stretch = True
   end
   object Button3: TButton
     Left = 568
@@ -294,8 +507,15 @@ object Form1: TForm1
     Width = 75
     Caption = 'Button3'
     OnClick = Button3Click
+    ParentFont = False
     TabOrder = 3
     Visible = False
+  end
+  object Image41: TImage
+    Left = -32
+    Height = 1
+    Top = -26
+    Width = 1
   end
   object ImageList1: TImageList
     Left = 172
