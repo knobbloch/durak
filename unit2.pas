@@ -21,7 +21,6 @@ private
 public
   isplaying : boolean; //закончил ли игрок играть
   numberplace : integer;
-  //cards: array[1..6] of Tcard;
   cards : TList;
   constructor create(numberplaceforguy : integer);
   destructor Destroy;
@@ -34,7 +33,7 @@ public
   supercard : integer;
   countofplayers : integer;
   guys : array [1..7] of Tguy; // игрок всегда перый гай!!
-  card6 : TList;//вот они те самые 6 карт из за которых замес
+  card6 : TList;//вот они, те самые 6 карт из за которых замес
   arrayofallcards : TList;//колода карт
   constructor create(players:integer);
   destructor destroy;
@@ -83,7 +82,7 @@ begin
     //if guys[i].isplaying = true then  Form2.Memo1.Lines.Append('true');
   end;
   leaderindex := countofplayers ; // пока что игрок ходит первым
-  for i := 1 to 52 do begin   // заполнение колоды
+  for i := 1 to 13 do begin   // заполнение колоды
     for j := 1 to 4 do begin
         arrayofallcards.Add(Tcard.create(i, j));
     end;
@@ -132,7 +131,7 @@ var i, n, j : integer;
 end;
 
 procedure Tplaytable.systemofchoosingcard (Listofplayer, returnList : TList) ;// система выбора карт для начальных кидков, учитывает козырность и номер
-var prorities : array [0..51] of integer;                               //ннужно чтобы еще была система ддля подкидов уже во время хода когда не пас
+var prorities : array [0..51] of integer;                               //нужно чтобы еще была система для подкидов уже во время хода когда не пас
   i, m, o, countofnewlist : integer;
 begin
   for i := 0 to Listofplayer.Count - 1 do begin
@@ -147,7 +146,7 @@ begin
   for i := 0 to 51 do  begin
     if prorities[i] = m then begin
       returnList.Add(Listofplayer[o]);
-      o := o+1;
+      o := o + 1;
     end;
   end;
 end;
@@ -164,14 +163,14 @@ end;
 
 procedure Tplaytable.changeofcourse;
 begin
-  leaderindex := ((leaderindex + 1) mod countofplayers)+1;
+  leaderindex := ((leaderindex + 1) mod countofplayers) + 1;
 end;
 
 procedure Tplaytable.take;
 var i : integer;
 begin
   changeofcourse;
-  for i := 0 to card6.Count-1 do begin
+  for i := 0 to card6.Count - 1 do begin
     guys[leaderindex].cards.Add(card6[i]);
   end;
 end;
