@@ -111,6 +111,8 @@ end;
 procedure TForm1.Button3Click(Sender: TObject);//это кнопка забрать карты
 begin
   playtablegame.take;
+  button3.Hide;
+  playtablegame.AIcover;
 end;
 
 
