@@ -40,7 +40,7 @@ public
   arrayofallcards : TList;//колода карт
   constructor create(players:integer);
   destructor destroy;
-  function havetoprocessing : boolean;
+  procedure havetoprocessing (result : boolean);
   procedure systemofchoosingcard;
   procedure changeofleaderindex;
   procedure take;
@@ -48,6 +48,8 @@ public
   procedure sortCardsSuitandNumber(List, List1, List2, List3, superList : TList);
   property playerCardsCount: Integer read GetPlayerCardsCount;
   property playerCards[index:Integer]: Tcard read GetPlayerCard;
+  procedure givecards;
+  procedure switchdefender;
 end;
 
 
@@ -121,22 +123,43 @@ begin
   suit := suitofcard;
 end;
 
+procedure Tplaytable.givecards; //добавляет в их списки карты из раздачи если там они есть
+var i, n, j : integer;
+begin
+  {if Tguy(guys[0]).isplaying then begin
+      for i := 0 to guys.Count-1 do begin
+        if (Tguy(guys[i]).isplaying = true) then begin
+            n := n + 1;
+            if (arrayofallcards.Count > 0) and (Tguy(guys[i]).cards.Count < 6) then begin
+              for j := Tguy(guys[i]).cards.Count to 6 do begin
+                if  arrayofallcards.Count > 0 then Tguy(guys[i]).cards.Add(arrayofallcards[0]);
+                arrayofallcards.Delete(0);
+              end;
+            end;
+        end
+        else guys.Remove(guys[i]);
+      end;
+      if n > 1 then result := true;
+    end;}
+  for i := 0 to guys.Count-1 do begin
+    if (arrayofallcards.Count > 0) and (Tguy(guys[i]).cards.Count < 6) then begin
+      for j := Tguy(guys[i]).cards.Count to 5 do begin
+        if  arrayofallcards.Count > 0 then Tguy(guys[i]).cards.Add(arrayofallcards[0]);
+        arrayofallcards.Delete(0);
+      end;
+    end
+    else if Tguy(guys[i]).cards.Count < 1 then Tguy(guys[i]).isplaying:= false;
+  end;
+end;
 
-
-function Tplaytable.havetoprocessing: boolean;  //проверяет закончера ли игра, добавляет в их списки карты
+procedure Tplaytable.havetoprocessing(result : boolean);  //проверяет закончена ли игра
 var i, n, j : integer;
 begin
   result := false;
   if Tguy(guys[0]).isplaying then begin
-    for i := 0 to countofplayers-1 do begin
+    for i := 0 to guys.Count-1 do begin
       if (Tguy(guys[i]).isplaying = true) then begin
-          n := n + 1;
-          if (arrayofallcards.Count > 0) and (Tguy(guys[i]).cards.Count < 6) then begin
-            for j := Tguy(guys[i]).cards.Count to 6 do begin
-              if  arrayofallcards.Count > 0 then Tguy(guys[i]).cards.Add(arrayofallcards[0]);
-              arrayofallcards.Delete(0);
-            end;
-          end;
+        n := n + 1;
       end
       else guys.Remove(guys[i]);
     end;
@@ -144,35 +167,32 @@ begin
   end;
 end;
 
-procedure Tplaytable.systemofchoosingcard ;      // система выбора карт для начальных кидков, учитывает козырность и номер
-var prorities : array [0..51] of integer;                               //ннужно чтобы еще была система ддля подкидов
+procedure Tplaytable.systemofchoosingcard ;      // система выбора карт для начальных кидков, учитывает козырность и номер, может подкинуть несколько карт
+var prorities : array [0..51] of integer;                               //нужно чтобы еще была система ддля подкидов
   i, m, countofnewlist : integer;
+  g : Tguy;
 begin
-  for i := 0 to Tguy(guys[leaderindex]).cards.Count-1 do begin
-    if Tcard(guys[leaderindex]).suit <> supercard then begin
-      prorities[i] := Tcard(guys[leaderindex]).number + 13;
+  g := Tguy(guys[leaderindex]);
+  for i := 0 to g.cards.Count-1 do begin
+    if tcard(g.cards[i]).suit <> supercard then begin
+      prorities[i] := Tcard(g.cards[i]).number + 13;
     end
-    else prorities[i] := Tcard(guys[i]).number;
+    else prorities[i] := Tcard(g.cards[i]).number;
   end;
-  for i := 0 to Tguy(guys[leaderindex]).cards.Count-1 do
+  m := 0;
+  for i := 0 to g.cards.Count-1 do
     m := max(m, prorities[i]);
-  for i := 0 to Tguy(guys[leaderindex]).cards.Count-1 do  begin
+  for i := g.cards.Count-1 downto 0 do  begin
     if prorities[i] = m then begin
-      card6.Add(Tguy(guys[leaderindex]).cards[i]);
-      Tguy(guys[leaderindex]).cards.remove(Tguy(guys[leaderindex]).cards[i]);
-      {Form2.Memo1.Lines.Append(inttostr(Tcard(card6[i]).number));
-      Form2.Memo1.Lines.Append(inttostr(Tcard(card6[i]).suit));}
+      card6.Add(g.cards[i]);
+      g.cards.remove(g.cards[i]);
     end;
-  end;
-  for i := 0 to card6.count-1 do begin
-    Form2.Memo1.Lines.Append(inttostr(Tcard(card6[i]).number));
-    Form2.Memo1.Lines.Append(inttostr(Tcard(card6[i]).suit));
-  end;
+end;
 end;
 
 procedure Tplaytable.changeofleaderindex;
 begin
-  leaderindex := (leaderindex + 1) mod guys.Count-1;
+  leaderindex := (leaderindex + 1) mod guys.Count;
 end;
 
 procedure Tplaytable.sortCardsSuitandNumber(List, List1, List2, List3, superList : TList);
@@ -191,10 +211,12 @@ begin
 end;
 
 procedure Tplaytable.AImain;
+var result : boolean;
 begin
-  while havetoprocessing do begin
+  //while havetoprocessing(result : boolean) do begin
 
-  end;
+    givecards;
+  //end;
 end;
 
 function Tplaytable.GetPlayerCardsCount: Integer;
@@ -216,7 +238,34 @@ begin
   end;
   changeofleaderindex;  // 2 раза потому что чел котрый берет пропускает ход
   //if not havetoprocessing then close; // строка не проверена
-  //AImain;
+  givecards;
+end;
+
+procedure Tplaytable.switchdefender;  //чел (живой) переводит карты потому что у него есть чем  // может сделать перевод пдкинув несколько карт
+var i, L, R, j, nextleaderindex: integer;   ///ФУНКЦИЯ НЕ ПРОВЕРЕНА но в теории работает
+  b : boolean;
+  a : array [0..5] of integer;
+begin
+  b := false;
+  changeofleaderindex;
+  nextleaderindex := (leaderindex + 1) mod guys.Count;
+  Form2.Memo1.Lines.Append(' ');
+  for i := 0 to card6.Count-1 do
+    a[i] := tcard(card6).number;
+  for i := 0 to card6.Count-1 do begin
+    if a[i] > 0 then begin L := min(L, a[i]); R := max(R, a[i]) end;
+  end;
+  if (L=R ) and (card6.Count < 6) then begin
+    for j := 0 to tguy(guys[leaderindex]).cards.Count-1 do begin
+      if (tcard(tguy(guys[leaderindex]).cards).number = L) and (tguy(guys[nextleaderindex]).cards.Count >= card6.Count+1) then begin
+        b := true;
+        card6.Add(tguy(guys[leaderindex]).cards[j]);
+        tguy(guys[leaderindex]).cards.Remove(tguy(guys[leaderindex]).cards[j]);
+      end;
+    end;
+  end;
+  if b then changeofleaderindex;
+  givecards;
 end;
 
 end.

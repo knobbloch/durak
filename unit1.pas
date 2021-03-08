@@ -17,6 +17,7 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
+    Button4: TButton;
     ComboBox1: TComboBox;
     Image1: TImage;
     Image10: TImage;
@@ -65,6 +66,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ImageMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -103,13 +105,14 @@ uses
 procedure TForm1.Button1Click(Sender: TObject);
 var i, j : integer; card : Tcard; obj : pointer;
 begin
+  button4.Show;
   flag := true;
   randomize;
   playtablegame := Tplaytable.create(StrtoInt(ComboBox1.Items[ComboBox1.ItemIndex]));
   ComboBox1.Hide;
   Button1.Hide;
   Image1.tag := 0; Image2.tag := 0; Image3.tag := 0; Image4.tag := 0; Image5.tag := 0; Image6.tag := 0;
-  playtablegame.havetoprocessing;
+  playtablegame.givecards;
   Button3.Visible := True;
   last_img := 0;
   mas[15] := Image15; mas[16] := Image16; mas[17] := Image17; mas[18] := Image18;
@@ -159,6 +162,12 @@ begin
   end;
 end;
 
+procedure TForm1.Button4Click(Sender: TObject);   //проверка перевода
+begin
+  playtablegame.systemofchoosingcard;
+  playtablegame.switchdefender;
+end;
+
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
@@ -176,6 +185,7 @@ begin
 
   Form2 := TForm2.Create(Self);
   Form2.show;
+  button4.Hide;
 end;
 
 procedure TForm1.ImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
