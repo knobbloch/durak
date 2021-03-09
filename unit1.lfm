@@ -505,7 +505,7 @@ object Form1: TForm1
     Height = 25
     Top = 352
     Width = 75
-    Caption = 'Button3'
+    Caption = 'взять'
     OnClick = Button3Click
     ParentFont = False
     TabOrder = 3
@@ -518,13 +518,31 @@ object Form1: TForm1
     Width = 1
   end
   object Button4: TButton
-    Left = 171
+    Left = 272
     Height = 25
     Top = 352
     Width = 75
-    Caption = 'Button4'
+    Caption = 'перевести'
     OnClick = Button4Click
     TabOrder = 4
+  end
+  object Button5: TButton
+    Left = 16
+    Height = 25
+    Top = 352
+    Width = 75
+    Caption = 'покрыть'
+    OnClick = Button5Click
+    TabOrder = 5
+  end
+  object Button6: TButton
+    Left = 824
+    Height = 25
+    Top = 352
+    Width = 75
+    Caption = 'пас'
+    OnClick = Button6Click
+    TabOrder = 6
   end
   object ImageList1: TImageList
     Left = 172

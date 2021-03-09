@@ -18,6 +18,8 @@ type
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
+    Button5: TButton;
+    Button6: TButton;
     ComboBox1: TComboBox;
     Image1: TImage;
     Image10: TImage;
@@ -67,6 +69,8 @@ type
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
+    procedure Button6Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ImageMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -163,9 +167,25 @@ begin
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);   //проверка перевода
+var card, cc : Tcard;
+  g : Tguy;
 begin
+  g := Tguy(playtablegame.guys[0]);
   playtablegame.systemofchoosingcard;
-  playtablegame.switchdefender;
+  card := Tcard(g.cards[0]);//вместо card подставить карту которая новая добавляестя в card6
+  playtablegame.switchdefender(card);
+end;
+
+procedure TForm1.Button5Click(Sender: TObject);
+var card : Tcard;//в эту карту нужно добавить карту, которая выбирается игроком
+
+begin
+  //playtablegame.covercards; //если карты неподходящие то кнопка просто не сработает
+end;
+
+procedure TForm1.Button6Click(Sender: TObject);
+begin
+  playtablegame.changeofleaderindex;
 end;
 
 
