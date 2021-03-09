@@ -175,9 +175,9 @@ begin
   g := Tguy(guys[leaderindex]);
   for i := 0 to g.cards.Count-1 do begin
     if tcard(g.cards[i]).suit <> supercard then begin
-      prorities[i] := Tcard(g.cards[i]).number + 13;
+      prorities[i] := 13 - Tcard(g.cards[i]).number ;
     end
-    else prorities[i] := Tcard(g.cards[i]).number;
+    else prorities[i] := Tcard(g.cards[i]).number - 13;
   end;
   m := 0;
   for i := 0 to g.cards.Count-1 do
@@ -242,20 +242,38 @@ begin
 end;
 
 procedure Tplaytable.switchdefender;  //чел (живой) переводит карты потому что у него есть чем  // может сделать перевод пдкинув несколько карт
-var i, L, R, j, nextleaderindex: integer;   ///ФУНКЦИЯ НЕ ПРОВЕРЕНА но в теории работает
+var i, L, R, j, nextleaderindex: integer;
   b : boolean;
   a : array [0..5] of integer;
 begin
   b := false;
-  changeofleaderindex;
-  nextleaderindex := (leaderindex + 1) mod guys.Count;
+
+  for i := 0 to card6.Count-1 do   //вывод
+    Form2.Memo1.Lines.Append(IntToStr((Tcard(card6[i])).number) + ' ' + IntToStr((Tcard(card6[i])).suit) + ' '+ inttostr(supercard));
   Form2.Memo1.Lines.Append(' ');
+  for i := 0 to Tguy(guys[leaderindex]).cards.Count-1 do
+    Form2.Memo1.Lines.Append(IntToStr(Tcard((Tguy(guys[leaderindex])).cards[i]).number) + ' ' + IntToStr(Tcard((Tguy(guys[leaderindex])).cards[i]).suit));
+
+  changeofleaderindex;
+
+  Form2.Memo1.Lines.Append(' '); //вывод
+  for i := 0 to Tguy(guys[leaderindex]).cards.Count-1 do
+    Form2.Memo1.Lines.Append(IntToStr(Tcard((Tguy(guys[leaderindex])).cards[i]).number) + ' ' + IntToStr(Tcard((Tguy(guys[leaderindex])).cards[i]).suit));
+   Form2.Memo1.Lines.Append(' ');
+
+  nextleaderindex := (leaderindex + 1) mod guys.Count;
+
   for i := 0 to card6.Count-1 do
     a[i] := tcard(card6).number;
-  for i := 0 to card6.Count-1 do begin
-    if a[i] > 0 then begin L := min(L, a[i]); R := max(R, a[i]) end;
+  R := 0;
+  L := 100;
+
+  for i := 0 to card6.Count-1 do begin  //это исправить
+    L := min(L, a[i]); R := max(R, a[i]);
   end;
-  if (L=R ) and (card6.Count < 6) then begin
+
+  Form2.Memo1.Lines.Append(inttostr(L)+' '+ inttostr(R));
+  if (L=R) and (card6.Count < 6) then begin
     for j := 0 to tguy(guys[leaderindex]).cards.Count-1 do begin
       if (tcard(tguy(guys[leaderindex]).cards).number = L) and (tguy(guys[nextleaderindex]).cards.Count >= card6.Count+1) then begin
         b := true;
@@ -264,8 +282,14 @@ begin
       end;
     end;
   end;
+  Form2.Memo1.Lines.Append(' ');
+  for i := 0 to Tguy(guys[leaderindex]).cards.Count-1 do
+    Form2.Memo1.Lines.Append(IntToStr(Tcard((Tguy(guys[leaderindex])).cards[i]).number) + ' ' + IntToStr(Tcard((Tguy(guys[leaderindex])).cards[i]).suit));
+  Form2.Memo1.Lines.Append(' ');
+  for i := 0 to card6.Count-1 do
+    Form2.Memo1.Lines.Append(IntToStr((Tcard(card6[i])).number) + ' ' + IntToStr((Tcard(card6[i])).suit) + ' '+ inttostr(supercard));
   if b then changeofleaderindex;
   givecards;
 end;
-
+//вывод: первым выводятся номер и масть карт на столе подкинутые ии и козырная масть, потом карты подкидывающего (без подкинутых карт), потом карты того, кто защищается потом снова кто защищается но уже после возможного перевода, потом снова на столе
 end.
