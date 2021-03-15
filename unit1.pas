@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
-  ExtCtrls
+  ExtCtrls, ActnList
   , Unit2;
 
 type
@@ -14,13 +14,14 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    Action1: TAction;
+    ActionList1: TActionList;
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
     Button5: TButton;
     Button6: TButton;
-    Button7: TButton;
     ComboBox1: TComboBox;
     Image1: TImage;
     Image10: TImage;
@@ -73,6 +74,7 @@ type
     Label1: TLabel;
     Shape1: TShape;
     Shape2: TShape;
+    procedure Action1Update(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -81,34 +83,107 @@ type
     procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure ImageMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-    procedure CoverImageMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+    procedure Image17Click(Sender: TObject);
+    procedure Image1Click(Sender: TObject);
+    procedure Image4Click(Sender: TObject);
+    procedure ImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure FindCard(suit, num : integer; List : TList; var res : TCard);
+    procedure CoverImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure MastoEndmas;
-  private     //ой упс ахах это же поля формы
+    procedure UpdateCards;
+    procedure ShowHideButtons (condition : integer);
+  private
     flag : boolean;
-    images : array [1..6] of Timage;
-    guys : array [1..7] of Tguy;
-    supercard : integer;
+    //images : array [1..6] of Timage;
     playtablegame : Tplaytable;
-    bito : boolean;//рисовать текстуру сыгранных карт или нет
+    distribution : boolean;
+    mas : array[15..40] of TImage;
+    distributioncard : TImage;
+    end_mas : array[1..6] of TImage;
+    cover_mas : array[1..6] of TImage;
+    //move: boolean;
+    cover_img, last_img: integer;
+
   public
   end;
 
 var
   Form1: TForm1;
-  mas : array[15..40] of TImage;
-  end_mas : array[1..6] of TImage;
-  cover_mas : array[1..6] of TImage;
-  move: boolean;
-  cover_img, last_img: integer;
 
 implementation
 {$R *.lfm}
 
 uses
   Unit3;
+
+
+procedure TForm1.UpdateCards;
+var i : integer;
+begin
+  for i := 0 to playtablegame.card6.Count-1 do begin
+    end_mas[i+1].Picture.LoadFromFile('img\' + inttostr(tcard(playtablegame.card6[i]).suit) + '_' + inttostr(tcard(playtablegame.card6[i]).number) + '.png');
+    end_mas[i+1].tag := tcard(playtablegame.card6[i]).suit * 100 + tcard(playtablegame.card6[i]).number;
+  end;
+  for i := playtablegame.card6.Count to 5 do begin
+     end_mas[i+1].Picture.Clear;
+     end_mas[i+1].Tag:=0;
+  end;
+  distribution := playtablegame.arrayofallcards.Count > 0;
+  distribution := true;
+  if distribution then begin
+    distributioncard.Picture.LoadFromFile('img\tshirt.png');
+  end;
+  for i := 0 to tguy(playtablegame.guys[0]).cards.Count-1 do begin
+    mas[i+15].Picture.LoadFromFile('img\' + inttostr(tcard(tguy(playtablegame.guys[0]).cards[i]).suit) + '_' + inttostr(tcard(tguy(playtablegame.guys[0]).cards[i]).number) + '.png');
+    mas[i+15].tag := tcard(tguy(playtablegame.guys[0]).cards[i]).suit * 100 + tcard(tguy(playtablegame.guys[0]).cards[i]).number;
+  end;
+  for i := tguy(playtablegame.guys[0]).cards.Count to 40-15 do begin
+    mas[i+15].Picture.Clear;
+    mas[i+15].Tag:=0;
+  end;
+end;
+
+procedure TForm1.ShowHideButtons (condition : integer);
+var b : boolean;
+begin
+  if condition = 1 then begin
+    button3.Enabled := false;//взять
+    button4.Enabled := false;//перевести
+    button5.Enabled := false;//покрыть
+    button6.Enabled := false;//сходить
+  end
+  else if condition = 2 then begin
+    button3.Enabled := true;
+    button4.Enabled := false;
+    button5.Enabled := true;
+    button6.Enabled := true;
+  end
+  else if condition = 3 then begin
+    button3.Enabled := false;
+    button4.Enabled := true;
+    button5.Enabled := true;
+    button6.Enabled := true;
+  end
+  else if condition = 4 then begin
+    button3.Enabled := false;
+    button4.Enabled := false;
+    button5.Enabled := false;
+    button6.Enabled := false;
+  end
+  else if condition = 5 then begin
+    button3.Enabled := false;
+    button4.Enabled := false;
+    button5.Enabled := false;
+    button6.Enabled := false;
+  end
+  else if condition = 6 then begin
+    playtablegame.cantransfer(b);
+    button4.Enabled := b;
+    button6.Enabled := b;
+    button3.Show;
+    if tguy(playtablegame.guys[0]).cards.Count > 0 then button5.Show;
+  end;
+end;
 
 procedure TForm1.Button1Click(Sender: TObject);
 var i, j : integer; card : Tcard; obj : pointer;
@@ -123,6 +198,7 @@ begin
   playtablegame.givecards;
   Button3.Visible := True;
   last_img := 0;
+  Button6.Visible := True;
   mas[15] := Image15; mas[16] := Image16; mas[17] := Image17; mas[18] := Image18;
   mas[19] := Image19; mas[20] := Image20; mas[21] := Image21; mas[22] := Image22;
   mas[23] := Image23; mas[24] := Image24; mas[25] := Image25; mas[26] := Image26;
@@ -134,6 +210,7 @@ begin
   end_mas[4] := Image4; end_mas[5] := Image5; end_mas[6] := Image6;
   cover_mas[1] := Image42; cover_mas[2] := Image43; cover_mas[3] := Image44;
   cover_mas[4] := Image45; cover_mas[5] := Image46; cover_mas[6] := Image47;
+  distributioncard := Image7;
   for i := 1 to Length(end_mas) do
       end_mas[i].tag := 0;
   for i := 1 to Length(cover_mas) do
@@ -143,11 +220,25 @@ begin
   j := 0;
   for j := 0 to playtablegame.playerCardsCount - 1 do begin
       i := 15 + j * 2;
-      mas[i].Picture.LoadFromFile('img\' + inttostr(playtablegame.playerCards[j].suit) +
-                       '_' + inttostr(playtablegame.playerCards[j].number) + '.png');
-      mas[i].tag := playtablegame.playerCards[j].suit * 100 +
-                       playtablegame.playerCards[j].number;
+      mas[i].Picture.LoadFromFile('img\' + inttostr(playtablegame.playerCards[j].suit) +'_' + inttostr(playtablegame.playerCards[j].number) + '.png');
+      mas[i].tag := playtablegame.playerCards[j].suit * 100 + playtablegame.playerCards[j].number;
    end;
+  playtablegame.systemofchoosingcard;
+  UpdateCards;
+  for i := 0 to Tguy(playtablegame.guys[0]).cards.Count-1 do
+    Form2.Memo1.Lines.Append('карта защищающегося ' + IntToStr(Tcard((Tguy(playtablegame.guys[0])).cards[i]).number) + ' ' + IntToStr(Tcard((Tguy(playtablegame.guys[0])).cards[i]).suit));
+  ShowHideButtons(6);
+end;
+
+procedure TForm1.Action1Update(Sender: TObject);
+var L, j : integer;
+  b : boolean;
+begin
+  {b := false;
+  L := Tcard(playtablegame.card6[0]).number;
+  for j := 0 to tguy(playtablegame.guys[nextleaderindex]).cards.Count-1  do
+    if Tcard(tguy(playtablegame.guys[nextleaderindex]).cards[j]).number = L then b := true;
+  //action1.enabled := playtablegame.}
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
@@ -155,128 +246,106 @@ begin
   close;
 end;
 
-procedure TForm1.Button3Click(Sender: TObject);//это кнопка забрать карты
-var i, j, k : integer;
-    add_card : array[1..12] of integer;
+procedure TForm1.Button3Click(Sender: TObject);//взять
 begin
-  // и тут тоже проверка мой ли ход
+  ShowHideButtons(4);
   last_img := 0;
   cover_img := 0;
   playtablegame.take;
-  k := 0;
-  for i := 1 to Length(end_mas) do
-      if end_mas[i].tag <> 0 then begin
-        k := k + 1;
-        add_card[k] := end_mas[i].tag;
-        end_mas[i].tag := 0;
-        end_mas[i].Picture := nil;
-      end;
-  for i := 1 to Length(cover_mas) do
-      if cover_mas[i].tag <> 0 then begin
-        k := k + 1;
-        add_card[k] := cover_mas[i].tag;
-        cover_mas[i].tag := 0;
-        cover_mas[i].Picture := nil;
-      end;
-  for j := 1 to k do begin
-      if mas[j + 14].tag = 0 then begin
-         mas[j + 14].Picture.LoadFromFile('img\' + inttostr(add_card[j] div 100) +
-                         '_' + inttostr(add_card[j] mod 100) + '.png');
-         mas[j + 14].tag := add_card[j];
-      end;
-  end;
+  UpdateCards;
 end;
 
-procedure TForm1.Button4Click(Sender: TObject);   //проверка перевода
-var card, cc : Tcard;
+procedure TForm1.Button4Click(Sender: TObject);   //перевести
+var card : Tcard;
     g : Tguy;
-    nums : array[1..12] of integer;
-    k, i : integer;
-    stop : boolean;
+    nextleaderindex : integer;
+    x : boolean;
 begin
+  nextleaderindex := (playtablegame.leaderindex + 1) mod playtablegame.guys.Count;
+  ShowHideButtons(3);
   g := Tguy(playtablegame.guys[0]);
-  playtablegame.systemofchoosingcard;
-  card := Tcard(g.cards[0]);//вместо card подставить карту которая новая добавляестя в card6
-  playtablegame.switchdefender(card);
 
-  k := 0;
-  for i := 1 to Length(end_mas) do begin
-      if end_mas[i].tag mod 100 <> 0 then begin
-         k := k + 1;
-         nums[k] := end_mas[i].tag mod 100
-      end;
-      if cover_mas[i].tag mod 100 <> 0 then begin
-         k := k + 1;
-         nums[k] := cover_mas[i].tag mod 100
-      end;
-  end;
-  stop := False;
-  for i := 1 to k do
-     if (mas[last_img].tag mod 100 = nums[i]) and (not stop) then begin
-       MasToEndmas;
-       stop := True;
+  Form2.Memo1.Lines.Append(inttostr(last_img));
+  FindCard(mas[last_img].tag div 100, mas[last_img].tag mod 100 , tguy(playtablegame.guys[nextleaderindex]).cards, card);
+  playtablegame.switchdefender(card, x);
+    {k := 0;
+    for i := 1 to Length(end_mas) do begin
+        if end_mas[i].tag mod 100 <> 0 then begin
+           k := k + 1;
+           nums[k] := end_mas[i].tag mod 100
+        end;
+        if cover_mas[i].tag mod 100 <> 0 then begin
+           k := k + 1;
+           nums[k] := cover_mas[i].tag mod 100
+        end;
+    end;
+    stop := False;
+    for i := 1 to k do
+       if (mas[last_img].tag mod 100 = nums[i]) and (not stop) then begin
+         MasToEndmas;
+         stop := True;
+       end;}
+  UpdateCards;
+end;
+
+procedure TForm1.FindCard(suit, num : integer; List : TList; var res : TCard);
+var i : integer;
+begin
+  res := nil;
+  //nextleaderindex := (playtablegame.leaderindex + 1) mod playtablegame.guys.Count;
+  for i := 0 to List.Count - 1 do begin
+     if (suit = TCard(List[i]).suit) and (num = TCard(List[i]).number) then begin
+          //Form2.Memo1.Lines.Append(inttostr(TCard(List[i]).number));
+          //Form2.Memo1.Lines.Append(inttostr(TCard(List[i]).suit));
+          res := TCard(List[i]);
+
      end;
-end;
-
-procedure TForm1.Button5Click(Sender: TObject);
-var card : Tcard;//в эту карту нужно добавить карту, которая выбирается игроком
-begin
-  //playtablegame.covercards; //если карты неподходящие то кнопка просто не сработает
-  //ну и тут тоже должна быть проверка мой ли это ход
-  if (cover_img <> 0) and (last_img <> 0) and
-      (((mas[last_img].tag div 100 = end_mas[cover_img].tag div 100) and
-      (mas[last_img].tag mod 100 > end_mas[cover_img].tag mod 100)) or
-      ((mas[last_img].tag div 100 = playtablegame.supercard) and
-      (end_mas[cover_img].tag div 100 <> supercard))) then begin
-        cover_mas[cover_img].Picture.LoadFromFile('img\' + inttostr(mas[last_img].tag div 100) + '_' + inttostr(mas[last_img].tag mod 100) + '.png');
-        cover_mas[cover_img].tag := mas[last_img].tag;
-        mas[last_img].Picture := nil;
-        mas[last_img].tag := 0;
-        last_img := 0;
-        cover_img := 0;
-        Shape1.Visible := False;
-        Shape2.Visible := False;
   end;
 end;
 
-procedure TForm1.Button6Click(Sender: TObject);
+
+procedure TForm1.Button5Click(Sender: TObject); //покрыть
+var CardFromInventory, OnTableCard : Tcard;
+    bool : boolean;
+    nextleaderindex : integer;
+    g : Tlist;
 begin
-  playtablegame.changeofleaderindex;
+  if (last_img <> 0) and (cover_img <> 0) then begin
+    nextleaderindex := (playtablegame.leaderindex + 1) mod playtablegame.guys.Count;
+    g := Tguy(playtablegame.guys[nextleaderindex]).cards;
+    FindCard(mas[last_img].tag div 100, mas[last_img].tag mod 100, g , CardFromInventory);
+    FindCard(end_mas[cover_img].tag div 100, end_mas[cover_img].tag mod 100, playtablegame.card6, OnTableCard);
+    if CardFromInventory <> nil then playtablegame.covercards(CardFromInventory, OnTableCard, bool);// else Form2.Memo1.Lines.Append('g');
+    if bool then begin
+        ShowHideButtons(2);
+              cover_mas[cover_img].Picture.LoadFromFile('img\' + inttostr(mas[last_img].tag div 100) + '_' + inttostr(mas[last_img].tag mod 100) + '.png');
+              cover_mas[cover_img].tag := mas[last_img].tag;
+              mas[last_img].Picture := nil;
+              mas[last_img].tag := 0;
+              last_img := 0;
+              cover_img := 0;
+              Shape1.Visible := False;
+              Shape2.Visible := False;
+    end;
+  end;
 end;
 
-procedure TForm1.Button7Click(Sender: TObject);
+
+procedure TForm1.Button7Click(Sender: TObject); //сходить
 var i : integer;
     stop : boolean;
 begin
-  //if playtablegame.leaderindex = 1 then begin
-     MasToEndmas;
-  //end;
-end;
-
-procedure TForm1.Button4Click(Sender: TObject);   //проверка перевода
-var card, cc : Tcard;
-  g : Tguy;
-begin
-  g := Tguy(playtablegame.guys[0]);
-  playtablegame.systemofchoosingcard;
-  card := Tcard(g.cards[0]);//вместо card подставить карту которая новая добавляестя в card6
-  playtablegame.switchdefender(card);
-end;
-
-procedure TForm1.Button5Click(Sender: TObject);
-var card : Tcard;//в эту карту нужно добавить карту, которая выбирается игроком
-
-begin
-  //playtablegame.covercards; //если карты неподходящие то кнопка просто не сработает
+  MasToEndmas;
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
 begin
+  ShowHideButtons(5);
   playtablegame.changeofleaderindex;
 end;
 
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TForm1.FormCreate (Sender: TObject);
 begin
   ComboBox1.Items.Add('2');
   ComboBox1.Items.Add('3');
@@ -293,6 +362,23 @@ begin
   Form2 := TForm2.Create(Self);
   Form2.show;
   button4.Hide;
+  button5.Hide;
+  button6.Hide;
+end;
+
+procedure TForm1.Image17Click(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.Image1Click(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.Image4Click(Sender: TObject);
+begin
+
 end;
 
 procedure TForm1.MasToEndmas;
@@ -313,8 +399,7 @@ begin
           end;
 end;
 
-procedure TForm1.CoverImageMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TForm1.CoverImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var i : integer;
 begin
   // на меня ходят?

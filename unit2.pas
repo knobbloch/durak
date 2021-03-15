@@ -23,6 +23,7 @@ public
   numberplace : integer;
   //cards: array[1..6] of Tcard;
   cards : TList;
+  //condition : integer;
   constructor create(numberplaceforguy : integer);
   destructor Destroy;
 end;
@@ -49,8 +50,9 @@ public
   property playerCardsCount: Integer read GetPlayerCardsCount;
   property playerCards[index:Integer]: Tcard read GetPlayerCard;
   procedure givecards;
-  procedure switchdefender(card:Tcard);
-  procedure covercards (card : Tcard);
+  procedure switchdefender (card:Tcard; var x : boolean);
+  procedure covercards (CardFromInventory, OnTableCard : Tcard; var b : boolean);
+  procedure canTransfer(var b : boolean);
 end;
 
 
@@ -92,13 +94,22 @@ begin
     guys.Add(Pointer(g));
   end;
   leaderindex := countofplayers-1 ;
-  for i := 1 to 13 do begin
+ for i := 1 to 13 do begin
     for j := 1 to 4 do begin
       arrayofallcards.Add(Tcard.create(i, j));
     end;
   end;
   Shuffle(arrayofallcards);
-  supercard := random(-3)+4;
+  {tguy(guys[0]).cards.Add(Pointer(tcard.create(1, 2)));
+  tguy(guys[0]).cards.Add(Pointer(tcard.create(10, 4)));
+  tguy(guys[0]).cards.Add(Pointer(tcard.create(1, 3)));
+  tguy(guys[1]).cards.Add(Pointer(tcard.create(12, 2)));
+  tguy(guys[1]).cards.Add(Pointer(tcard.create(12, 4)));
+  tguy(guys[1]).cards.Add(Pointer(tcard.create(12, 3)));}
+  //card6.Add(Pointer(tcard.create(1, 4)));
+  supercard := random(-3)+4 ;
+
+  //supercard := 1;
 end;
 
 destructor Tplaytable.destroy;
@@ -120,6 +131,16 @@ constructor Tcard.create (numberofcard, suitofcard : integer);
 begin
   number := numberofcard;
   suit := suitofcard;
+end;
+
+procedure Tplaytable.canTransfer(var b : boolean);//функция для того чтобы понимать может ли игрок перевести
+var i, L : integer;
+begin
+  b := false;
+  L := tcard(card6[0]).number;
+  for i := 0 to tguy(guys[0]).cards.Count-1 do begin
+    if L = tcard(tguy(guys[0]).cards[i]).number then b := true;
+  end;
 end;
 
 procedure Tplaytable.givecards; //добавляет в их списки карты из раздачи если там они есть
@@ -176,7 +197,9 @@ begin
       card6.Add(g.cards[i]);
       g.cards.remove(g.cards[i]);
     end;
-end;
+  end;
+  for i := 0 to Tguy(guys[leaderindex]).cards.Count-1 do
+    Form2.Memo1.Lines.Append('карта нападающего ' +IntToStr(Tcard((Tguy(guys[leaderindex])).cards[i]).number) + ' ' + IntToStr(Tcard((Tguy(guys[leaderindex])).cards[i]).suit));
 end;
 
 procedure Tplaytable.sortCardsSuitandNumber(List, List1, List2, List3, superList : TList);  //пока что сортирует тлько по масти потом доделаю
@@ -217,53 +240,76 @@ procedure Tplaytable.take;
 var i : integer;
 begin
   changeofleaderindex;
-  for i := 0 to card6.Count-1 do begin
+  for i := card6.Count-1 downto 0 do begin
     Tguy(guys[leaderindex]).cards.Add(card6[i]); // add подкинутые
+    card6.Remove(card6[i]);
   end;
   changeofleaderindex;
   givecards;
 end;
 
-procedure Tplaytable.switchdefender(card:Tcard);  //чел (живой) переводит карты потому что у него есть чем  // может сделать перевод пдкинув несколько карт
+procedure Tplaytable.switchdefender(card:Tcard; var x : boolean);  //чел (живой) переводит карты потому что у него есть чем  // может сделать перевод пдкинув несколько карт
 var i, L, j, nextleaderindex, nextnextleaderindex: integer;
   a : array [0..5] of integer;
 begin
-  for i := 0 to card6.Count-1 do   //вывод
-    Form2.Memo1.Lines.Append(IntToStr((Tcard(card6[i])).number) + ' ' + IntToStr((Tcard(card6[i])).suit) + ' '+ inttostr(supercard));
+  {for i := 0 to card6.Count-1 do   //вывод
+    Form2.Memo1.Lines.Append('карты на столе ' +IntToStr((Tcard(card6[i])).number) + ' ' + IntToStr((Tcard(card6[i])).suit) + ' '+ inttostr(supercard));
   Form2.Memo1.Lines.Append(' ');
   for i := 0 to Tguy(guys[leaderindex]).cards.Count-1 do
-    Form2.Memo1.Lines.Append(IntToStr(Tcard((Tguy(guys[leaderindex])).cards[i]).number) + ' ' + IntToStr(Tcard((Tguy(guys[leaderindex])).cards[i]).suit));
+    Form2.Memo1.Lines.Append('карта нападающего ' +IntToStr(Tcard((Tguy(guys[leaderindex])).cards[i]).number) + ' ' + IntToStr(Tcard((Tguy(guys[leaderindex])).cards[i]).suit));
+  Form2.Memo1.Lines.Append(' ');
+  Form2.Memo1.Lines.Append(IntToStr(leaderindex));}
 
+  x := false;
   nextleaderindex := (leaderindex + 1) mod guys.Count;
   nextnextleaderindex := (nextleaderindex + 1) mod guys.Count;
 
-  Form2.Memo1.Lines.Append(' '); //вывод
+ { Form2.Memo1.Lines.Append(' '); //вывод
   for i := 0 to Tguy(guys[nextleaderindex]).cards.Count-1 do
-    Form2.Memo1.Lines.Append(IntToStr(Tcard((Tguy(guys[nextleaderindex])).cards[i]).number) + ' ' + IntToStr(Tcard((Tguy(guys[nextleaderindex])).cards[i]).suit));
-   Form2.Memo1.Lines.Append(' ');
+    Form2.Memo1.Lines.Append('карта защищающегося ' + IntToStr(Tcard((Tguy(guys[nextleaderindex])).cards[i]).number) + ' ' + IntToStr(Tcard((Tguy(guys[nextleaderindex])).cards[i]).suit));
+   Form2.Memo1.Lines.Append(' ');}
 
   L := Tcard(card6[0]).number;
   j := 0;
-  while (j <= tguy(guys[nextleaderindex]).cards.Count-1) and (tcard(tguy(guys[nextleaderindex]).cards[j]) <> card) and (tguy(guys[nextnextleaderindex]).cards.Count >= card6.Count+1) do
+  {Form2.Memo1.Lines.Append('j = ' + inttostr(j)); это все вывод
+  Form2.Memo1.Lines.Append(booltostr(j <= tguy(guys[nextleaderindex]).cards.Count-1));
+  Form2.Memo1.Lines.Append(booltostr(tcard(tguy(guys[nextleaderindex]).cards[j]) <> card));
+  Form2.Memo1.Lines.Append(booltostr(tguy(guys[nextnextleaderindex]).cards.Count >= card6.Count+1));
+  Form2.Memo1.Lines.Append(' ');
+  Form2.Memo1.Lines.Append(inttostr(tguy(guys[nextnextleaderindex]).cards.Count) + inttostr(card6.Count+1));
+  Form2.Memo1.Lines.Append(' ');
+  Form2.Memo1.Lines.Append(inttostr(card.number));
+  Form2.Memo1.Lines.Append(inttostr(card.suit)); }
+  while (j <= tguy(guys[nextleaderindex]).cards.Count-1) and (tcard(tguy(guys[nextleaderindex]).cards[j]) <> card) and (tguy(guys[nextnextleaderindex]).cards.Count >= card6.Count+1) do begin
     j := j + 1;
-  if (tguy(guys[nextleaderindex]).cards.Count >  j) and (card.number = L) then begin
-    card6.Add(pointer(card));
-    tguy(guys[nextleaderindex]).cards.Remove(tguy(guys[nextleaderindex]).cards[j]);
+    Form2.Memo1.Lines.Append('j = ' + inttostr(j));
+  end;
+  if j <= (tguy(guys[nextleaderindex]).cards.Count-1) then begin
+    if (tguy(guys[nextleaderindex]).cards.Count >  j) and (card.number = L) then begin
+      x := true;
+      card6.Add(pointer(card));
+      tguy(guys[nextleaderindex]).cards.Remove(card);
+    end;
   end;
 
   Form2.Memo1.Lines.Append(' ');  //это все тоже вывод
   for i := 0 to Tguy(guys[nextleaderindex]).cards.Count-1 do
-    Form2.Memo1.Lines.Append(IntToStr(Tcard((Tguy(guys[nextleaderindex])).cards[i]).number) + ' ' + IntToStr(Tcard((Tguy(guys[nextleaderindex])).cards[i]).suit));
-  Form2.Memo1.Lines.Append(' ');
+    Form2.Memo1.Lines.Append('карта защищающегося после подкида ' +IntToStr(Tcard((Tguy(guys[nextleaderindex])).cards[i]).number) + ' ' + IntToStr(Tcard((Tguy(guys[nextleaderindex])).cards[i]).suit));
+  {Form2.Memo1.Lines.Append(' ');
   for i := 0 to card6.Count-1 do
-    Form2.Memo1.Lines.Append(IntToStr((Tcard(card6[i])).number) + ' ' + IntToStr((Tcard(card6[i])).suit) + ' '+ inttostr(supercard));
+    Form2.Memo1.Lines.Append('карта на столе после подкида ' +IntToStr((Tcard(card6[i])).number) + ' ' + IntToStr((Tcard(card6[i])).suit) + ' '+ inttostr(supercard));
+  Form2.Memo1.Lines.Append(' ');
+  Form2.Memo1.Lines.Append(IntToStr(nextleaderindex)); }
 end;
 //вывод: первым выводятся номер и масть карт на столе подкинутые ии и козырная масть, потом карты подкидывающего (без подкинутых карт), потом карты того, кто защищается потом снова кто защищается но уже после возможного перевода, потом снова на столе
 
-procedure Tplaytable.covercards (card : Tcard);
+procedure Tplaytable.covercards (CardFromInventory, OnTableCard : Tcard; var b : boolean);
 var nextleaderindex : integer;
 begin
-  nextleaderindex := (leaderindex + 1) mod guys.Count;
+  Form2.Memo1.Lines.Append(IntToStr(OnTableCard.suit));
+  if (OnTableCard.suit <> supercard) and (CardFromInventory.suit = supercard) then b := true
+  else if ((OnTableCard.suit = CardFromInventory.suit) and (OnTableCard.number < CardFromInventory.number)) then b := true
+  else b := false;
 end;
 
 end.
