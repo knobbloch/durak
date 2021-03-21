@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 375
+  Left = 598
   Height = 521
-  Top = 179
+  Top = 269
   Width = 1073
   Caption = 'Form1'
   ClientHeight = 521
@@ -470,6 +470,14 @@ object Form1: TForm1
     Top = 293
     Width = 50
     Stretch = True
+  end
+  object Button7: TButton
+    Left = 608
+    Height = 25
+    Top = 352
+    Width = 75
+    OnClick = Button7Click
+    TabOrder = 7
   end
   object ImageList1: TImageList
     Left = 115

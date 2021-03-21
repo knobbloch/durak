@@ -22,6 +22,7 @@ type
     Button4: TButton;
     Button5: TButton;
     Button6: TButton;
+    Button7: TButton;
     ComboBox1: TComboBox;
     Image1: TImage;
     Image10: TImage;
@@ -124,6 +125,17 @@ begin
     end_mas[i+1].Picture.LoadFromFile('img\' + inttostr(tcard(playtablegame.card6[i]).suit) + '_' + inttostr(tcard(playtablegame.card6[i]).number) + '.png');
     end_mas[i+1].tag := tcard(playtablegame.card6[i]).suit * 100 + tcard(playtablegame.card6[i]).number;
   end;
+  for i := 0 to 5 do begin
+      cover_mas[i+1].Picture.Clear;
+      cover_mas[i+1].Tag:=0;
+  end;
+  for i := 0 to playtablegame.covercard6.Count-1 do begin
+    if (playtablegame.covercard6[i] <> nil) then begin
+      cover_mas[i+1].Picture.LoadFromFile('img\' + inttostr(tcard(playtablegame.covercard6[i]).suit) + '_' + inttostr(tcard(playtablegame.covercard6[i]).number) + '.png');
+      cover_mas[i+1].tag := tcard(playtablegame.covercard6[i]).suit * 100 + tcard(playtablegame.covercard6[i]).number;
+    end;
+  end;
+
   for i := playtablegame.card6.Count to 5 do begin
      end_mas[i+1].Picture.Clear;
      end_mas[i+1].Tag:=0;
@@ -156,12 +168,12 @@ begin
     button3.Enabled := true;
     button4.Enabled := false;
     button5.Enabled := true;
-    button6.Enabled := true;
+    button6.Enabled := false;
   end
   else if condition = 3 then begin
     button3.Enabled := false;
     button4.Enabled := true;
-    button5.Enabled := true;
+    button5.Enabled := false;
     button6.Enabled := true;
   end
   else if condition = 4 then begin
@@ -171,9 +183,9 @@ begin
     button6.Enabled := false;
   end
   else if condition = 5 then begin
-    button3.Enabled := false;
-    button4.Enabled := false;
-    button5.Enabled := false;
+    button3.Enabled := true;
+    button4.Enabled := true;
+    button5.Enabled := true;
     button6.Enabled := false;
   end
   else if condition = 6 then begin
@@ -182,7 +194,29 @@ begin
     button6.Enabled := b;
     button3.Show;
     if tguy(playtablegame.guys[0]).cards.Count > 0 then button5.Show;
+  end
+  else if condition = 7 then begin
+    button3.Enabled := true;
+    button4.Enabled := false;
+    button5.Enabled := false;
+    button6.Enabled := false;
+  end
+  else if condition = 8 then begin
+    button3.Enabled := true;
+    button4.Enabled := true;
+    button5.Enabled := false;
+    button6.Enabled := false;
   end;
+  if tguy(playtablegame.guys[0]).b5 = 1 then button5.Enabled := true else  if tguy(playtablegame.guys[0]).b5 = 0 then  button5.Enabled := false;  //для локальных настроек
+  if tguy(playtablegame.guys[0]).b4 = 1 then button4.Enabled := true else if tguy(playtablegame.guys[0]).b4 = 0 then button4.Enabled := false;
+  if tguy(playtablegame.guys[0]).b3 = 1 then button3.Enabled := true else if tguy(playtablegame.guys[0]).b3 = 0 then button3.Enabled := false;
+  if tguy(playtablegame.guys[0]).b6 = 1 then button6.Enabled := true else if tguy(playtablegame.guys[0]).b6 = 0 then  button6.Enabled := false;
+  if tguy(playtablegame.guys[0]).b7 = 1 then button7.Enabled := true else  if tguy(playtablegame.guys[0]).b7 = 0 then  button7.Enabled := false;
+  tguy(playtablegame.guys[0]).b5 := -1;
+  tguy(playtablegame.guys[0]).b4 := -1;
+  tguy(playtablegame.guys[0]).b3 := -1;
+  tguy(playtablegame.guys[0]).b6 := -1;
+  tguy(playtablegame.guys[0]).b7 := -1;
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -197,6 +231,7 @@ begin
   Image1.tag := 0; Image2.tag := 0; Image3.tag := 0; Image4.tag := 0; Image5.tag := 0; Image6.tag := 0;
   playtablegame.givecards;
   Button3.Visible := True;
+  Button5.Visible := True;
   last_img := 0;
   Button6.Visible := True;
   mas[15] := Image15; mas[16] := Image16; mas[17] := Image17; mas[18] := Image18;
@@ -227,7 +262,9 @@ begin
   UpdateCards;
   for i := 0 to Tguy(playtablegame.guys[0]).cards.Count-1 do
     Form2.Memo1.Lines.Append('карта защищающегося ' + IntToStr(Tcard((Tguy(playtablegame.guys[0])).cards[i]).number) + ' ' + IntToStr(Tcard((Tguy(playtablegame.guys[0])).cards[i]).suit));
-  ShowHideButtons(6);
+  ShowHideButtons(playtablegame.takecondition);
+  Form2.Memo1.Lines.Append('led button1 - ' + inttostr(playtablegame.leaderindex));
+  Form2.Memo1.Lines.Append('козырная - '+ inttostr(playtablegame.supercard) + '  (1 - красные сердечки, 2 - черные сердечки, 3 - красная оставшаяся фигура, 4 - черная оставшаяся фигура )');
 end;
 
 procedure TForm1.Action1Update(Sender: TObject);
@@ -247,11 +284,14 @@ begin
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);//взять
+var c : integer;
 begin
-  ShowHideButtons(4);
+  Form2.Memo1.Lines.Append('led button - ' + inttostr(playtablegame.leaderindex));
   last_img := 0;
   cover_img := 0;
   playtablegame.take;
+
+  ShowHideButtons(playtablegame.takecondition);
   UpdateCards;
 end;
 
@@ -259,33 +299,39 @@ procedure TForm1.Button4Click(Sender: TObject);   //перевести
 var card : Tcard;
     g : Tguy;
     nextleaderindex : integer;
-    x : boolean;
+    x, b : boolean;
 begin
-  nextleaderindex := (playtablegame.leaderindex + 1) mod playtablegame.guys.Count;
-  ShowHideButtons(3);
-  g := Tguy(playtablegame.guys[0]);
+  if last_img <> 0 then begin
+    nextleaderindex := (playtablegame.leaderindex + 1) mod playtablegame.guys.Count;
 
-  Form2.Memo1.Lines.Append(inttostr(last_img));
-  FindCard(mas[last_img].tag div 100, mas[last_img].tag mod 100 , tguy(playtablegame.guys[nextleaderindex]).cards, card);
-  playtablegame.switchdefender(card, x);
-    {k := 0;
-    for i := 1 to Length(end_mas) do begin
-        if end_mas[i].tag mod 100 <> 0 then begin
-           k := k + 1;
-           nums[k] := end_mas[i].tag mod 100
-        end;
-        if cover_mas[i].tag mod 100 <> 0 then begin
-           k := k + 1;
-           nums[k] := cover_mas[i].tag mod 100
-        end;
-    end;
-    stop := False;
-    for i := 1 to k do
-       if (mas[last_img].tag mod 100 = nums[i]) and (not stop) then begin
-         MasToEndmas;
-         stop := True;
-       end;}
-  UpdateCards;
+    g := Tguy(playtablegame.guys[0]);
+
+    Form2.Memo1.Lines.Append(inttostr(last_img));
+    FindCard(mas[last_img].tag div 100, mas[last_img].tag mod 100 , tguy(playtablegame.guys[nextleaderindex]).cards, card);
+    playtablegame.switchdefender(card, x);
+      {k := 0;
+      for i := 1 to Length(end_mas) do begin
+          if end_mas[i].tag mod 100 <> 0 then begin
+             k := k + 1;
+             nums[k] := end_mas[i].tag mod 100
+          end;
+          if cover_mas[i].tag mod 100 <> 0 then begin
+             k := k + 1;
+             nums[k] := cover_mas[i].tag mod 100
+          end;
+      end;
+      stop := False;
+      for i := 1 to k do
+         if (mas[last_img].tag mod 100 = nums[i]) and (not stop) then begin
+           MasToEndmas;
+           stop := True;
+         end;}
+    UpdateCards;
+    playtablegame.canTransfer (b);
+    ShowHideButtons(playtablegame.takecondition);
+    Form2.Memo1.Lines.Append('лидериндекс    -     '+ inttostr(playtablegame.leaderindex));
+
+  end;
 end;
 
 procedure TForm1.FindCard(suit, num : integer; List : TList; var res : TCard);
@@ -306,28 +352,49 @@ end;
 
 procedure TForm1.Button5Click(Sender: TObject); //покрыть
 var CardFromInventory, OnTableCard : Tcard;
-    bool : boolean;
-    nextleaderindex : integer;
+    bool, d : boolean;
+    nextleaderindex , i : integer;
     g : Tlist;
 begin
-  if (last_img <> 0) and (cover_img <> 0) then begin
+  Form2.Memo1.Lines.Append('лидериндекс    -     '+ inttostr(playtablegame.leaderindex));
+  if (last_img <> 0) and (cover_img <> 0) then begin //проверка что карты выбраны
     nextleaderindex := (playtablegame.leaderindex + 1) mod playtablegame.guys.Count;
     g := Tguy(playtablegame.guys[nextleaderindex]).cards;
     FindCard(mas[last_img].tag div 100, mas[last_img].tag mod 100, g , CardFromInventory);
     FindCard(end_mas[cover_img].tag div 100, end_mas[cover_img].tag mod 100, playtablegame.card6, OnTableCard);
-    if CardFromInventory <> nil then playtablegame.covercards(CardFromInventory, OnTableCard, bool);// else Form2.Memo1.Lines.Append('g');
-    if bool then begin
+    bool := false;
+    d := false;
+    if CardFromInventory <> nil then playtablegame.covercards(CardFromInventory, OnTableCard, bool);
+    if bool then begin //если просто может покрыть тогда
+      playtablegame.canplayercover (d);//сможет ли чел еще покрывать
+      Form2.Memo1.Lines.Append('d = ' + booltostr(d));
+      if d then begin
         ShowHideButtons(2);
-              cover_mas[cover_img].Picture.LoadFromFile('img\' + inttostr(mas[last_img].tag div 100) + '_' + inttostr(mas[last_img].tag mod 100) + '.png');
-              cover_mas[cover_img].tag := mas[last_img].tag;
-              mas[last_img].Picture := nil;
-              mas[last_img].tag := 0;
-              last_img := 0;
-              cover_img := 0;
-              Shape1.Visible := False;
-              Shape2.Visible := False;
+      end
+      else if not d then begin
+        ShowHideButtons (7);
+      end;
+      cover_mas[cover_img].Picture.LoadFromFile('img\' + inttostr(mas[last_img].tag div 100) + '_' + inttostr(mas[last_img].tag mod 100) + '.png');
+      cover_mas[cover_img].tag := mas[last_img].tag;
+      // mas[last_img].Picture := nil;
+      //mas[last_img].tag := 0;
+      last_img := 0;
+      cover_img := 0;
+      //Shape1.Visible := False;
+      //Shape2.Visible := False;
     end;
+    d := false;
+    //playtablegame.canplayercover (d);
+    Form2.Memo1.Lines.Append(booltostr(d));
+
+    //else if (playtablegame.card6.Count = 0)then begin
+        //ShowHideButtons (1)
+      //end;
   end;
+  Form2.Memo1.Lines.Append('лидериндекс    -     '+ inttostr(playtablegame.leaderindex));
+  Updatecards;
+  for i := 0 to Tguy(playtablegame.guys[0]).cards.Count-1 do
+    Form2.Memo1.Lines.Append('карта защищающегося ' + IntToStr(Tcard((Tguy(playtablegame.guys[0])).cards[i]).number) + ' ' + IntToStr(Tcard((Tguy(playtablegame.guys[0])).cards[i]).suit));
 end;
 
 
@@ -335,12 +402,13 @@ procedure TForm1.Button7Click(Sender: TObject); //сходить
 var i : integer;
     stop : boolean;
 begin
-  MasToEndmas;
+  //MasToEndmas;
+
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
 begin
-  ShowHideButtons(5);
+  ShowHideButtons(4);
   playtablegame.changeofleaderindex;
 end;
 
@@ -402,7 +470,6 @@ end;
 procedure TForm1.CoverImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var i : integer;
 begin
-  // на меня ходят?
    if flag = true then begin
      cover_img := 0;
      for i := Low(end_mas) to High(end_mas) do begin
