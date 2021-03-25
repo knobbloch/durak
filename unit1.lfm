@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 598
+  Left = 529
   Height = 521
-  Top = 269
+  Top = 280
   Width = 1073
   Caption = 'Form1'
   ClientHeight = 521
@@ -404,10 +404,11 @@ object Form1: TForm1
     Height = 25
     Top = 352
     Width = 75
-    Action = Action1
+    Caption = 'перевести'
     OnClick = Button4Click
     ParentFont = False
     TabOrder = 4
+    Visible = False
   end
   object Button5: TButton
     Left = 15
@@ -418,6 +419,7 @@ object Form1: TForm1
     OnClick = Button5Click
     ParentFont = False
     TabOrder = 5
+    Visible = False
   end
   object Button6: TButton
     Left = 464
@@ -428,6 +430,7 @@ object Form1: TForm1
     OnClick = Button6Click
     ParentFont = False
     TabOrder = 6
+    Visible = False
   end
   object Image42: TImage
     Left = 352
@@ -472,12 +475,88 @@ object Form1: TForm1
     Stretch = True
   end
   object Button7: TButton
-    Left = 608
+    Left = 160
+    Height = 25
+    Top = 320
+    Width = 75
+    Caption = 'принять'
+    OnClick = Button7Click
+    TabOrder = 7
+    Visible = False
+  end
+  object Button8: TButton
+    Left = 600
     Height = 25
     Top = 352
     Width = 75
-    OnClick = Button7Click
-    TabOrder = 7
+    Caption = 'положить'
+    OnClick = Button8Click
+    TabOrder = 8
+    Visible = False
+  end
+  object Label2: TLabel
+    Left = 48
+    Height = 15
+    Top = 320
+    Width = 34
+    Caption = 'Label2'
+    ParentColor = False
+    Visible = False
+  end
+  object Label3: TLabel
+    Left = 152
+    Height = 15
+    Top = 184
+    Width = 34
+    Caption = 'Label3'
+    ParentColor = False
+    Visible = False
+  end
+  object Label4: TLabel
+    Left = 320
+    Height = 15
+    Top = 120
+    Width = 34
+    Caption = 'Label4'
+    ParentColor = False
+    Visible = False
+  end
+  object Label5: TLabel
+    Left = 480
+    Height = 15
+    Top = 120
+    Width = 34
+    Caption = 'Label5'
+    ParentColor = False
+    Visible = False
+  end
+  object Label6: TLabel
+    Left = 648
+    Height = 15
+    Top = 184
+    Width = 34
+    Caption = 'Label6'
+    ParentColor = False
+    Visible = False
+  end
+  object Label7: TLabel
+    Left = 768
+    Height = 15
+    Top = 320
+    Width = 34
+    Caption = 'Label7'
+    ParentColor = False
+    Visible = False
+  end
+  object Label8: TLabel
+    Left = 613
+    Height = 30
+    Top = 293
+    Width = 60
+    AutoSize = False
+    Caption = 'Label8'
+    ParentColor = False
+    Visible = False
   end
   object ImageList1: TImageList
     Left = 115
@@ -518,13 +597,12 @@ object Form1: TForm1
       0000000000000000000000000000
     }
   end
-  object ActionList1: TActionList
-    Left = 48
-    Top = 80
-    object Action1: TAction
-      Caption = 'перевести'
-      OnExecute = Button4Click
-      OnUpdate = Action1Update
-    end
+  object Timer1: TTimer
+    Enabled = False
+    OnTimer = Timer1Timer
+    OnStartTimer = Timer1StartTimer
+    OnStopTimer = Timer1StopTimer
+    Left = 144
+    Top = 41
   end
 end
